@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>自定义手机端中间弹出框 | 青衫无忧</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://oackrevv.github.io/favicon.ico?v=1666927561537">
+<link rel="stylesheet" href="https://oackrevv.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+	&lt;meta charset=&quot;UTF-8&quot;&gt;
+	&lt;title&g..." />
+    <meta name="keywords" content="html" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://oackrevv.github.io">
+        <img src="https://oackrevv.github.io/images/avatar.png?v=1666927561537" class="site-logo">
+        <h1 class="site-title">青衫无忧</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/oackrevv" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      梦想未完成之前，决不能说放弃！
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://oackrevv.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">自定义手机端中间弹出框</h2>
+            <div class="post-date">2022-10-28</div>
+            
+            <div class="post-content" v-pre>
+              <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+	&lt;meta charset=&quot;UTF-8&quot;&gt;
+	&lt;title&gt;手机端中间弹出&lt;/title&gt;
+	&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0&quot;&gt;
+	&lt;style lang=&quot;scss&quot;&gt;
+	.cu-mask{
+		position: fixed;
+		z-index: 999;
+		top: 0;
+		right: 0;
+		left: 0;
+		bottom: 0;
+		background: rgba(0,0,0,.6);
+	}
+	.cu-modal{
+		position: fixed;
+		z-index: 999;
+		width: 90%;
+		max-width: 300px;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%,-50%);
+		background-color: #fff;
+		border-radius: 3px;
+		overflow: hidden;
+	}
+	.cu-modal__hd{
+		padding:15px 30px;
+		text-align: center;
+	}
+	.cu-modal__title{
+		font-weight: 400;
+		font-size: 18px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.cu-modal__bd{
+		padding: 20px;
+		min-height: 40px;
+		font-size: 15px;
+		line-height: 1.4;
+		color: #999;
+		max-height: 400px;
+		overflow-y: auto;
+	}
+	.cu-modal__ft{
+		position: relative;
+		line-height: 48px;
+		font-size: 18px;
+		display: flex;
+		text-align: center;
+	}
+	.cu-modal__btn{
+		display: block;
+		flex: 1;
+		color: #3cc51f;
+		text-decoration: none;
+		position: relative;
+	}
+	.cu-modal__btn:nth-child(1){
+		color: #353535;
+	}
+	.cu-modal__btn:after{
+		content: &quot;&quot;;
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 1px;
+		bottom: 0;
+		border-left: 1px solid #d5d5d6;
+		color: #d5d5d6;
+		transform-origin: 0 0;
+		transform: scaleX(.5);
+	}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	&lt;div class=&quot;cu-mask&quot;&gt;&lt;/div&gt;
+		&lt;div class=&quot;cu-modal&quot;&gt;
+		&lt;div class=&quot;cu-modal__hd&quot;&gt;
+			&lt;text class=&quot;cu-modal__title&quot;&gt;发布协议&lt;/text&gt;
+		&lt;/div&gt;
+		&lt;div class=&quot;cu-modal__bd&quot;&gt;
+			&lt;p&gt;　　甲方：&lt;br /&gt;
+			　　乙方：&lt;br /&gt;
+			　　甲乙双方经过友好协商，就乙方向甲方提供互联网信息发布服务，达成如下协议。&lt;br /&gt;
+			　　一、协议内容&lt;br /&gt;
+			　　&amp;nbsp;1 、甲、乙双方商定，甲方在乙方所属网站（ xxxx ）上发布 xx 展会信息展示，甲方提供相关图文的双语资料，放置位置为网站英文版 other news ＆ eventsl 栏目和网站中网版的企业频道。&lt;br /&gt;
+			　　&amp;nbsp;2 、甲方在乙方所发布全部信息内容需符合国家有关互联网法规规定；&lt;br /&gt;
+			　　&amp;nbsp;3 、经双方商定，甲方在乙方网站的发布信息时间为 ______ 年 ______ 月 ______ 日起至 ______ 年 ______ 月 ______ 日止，乙方收费标准为一次性收费人民币 XX 元整。费用在本协议签订后 3 日内甲方以汇款方式向乙方交付，乙方出具正规发票；&lt;br /&gt;
+			　　&amp;nbsp;4 、汇入行相关资料：&lt;br /&gt;
+			　　二、其他内容&lt;br /&gt;
+			　　协议期间乙方如因上级政策、国家法规等因素影响，对甲方发布信息位置改动，需与甲方协商方可进行；&lt;br /&gt;
+			　　三、协议有效期限&lt;br /&gt;
+			　　本协议自甲、乙两方签字盖章之日起生效，有效期至 &amp;nbsp; 年 &amp;nbsp; 月 &amp;nbsp; 日 &amp;nbsp; 。&lt;/p&gt;
+		&lt;/div&gt;
+		&lt;div class=&quot;cu-modal__ft&quot;&gt;
+			&lt;div class=&quot;cu-modal__btn cu-modal__btn_default&quot;&gt;取消&lt;/div&gt;
+			&lt;div class=&quot;cu-modal__btn cu-modal__btn_default&quot;&gt;确定&lt;/div&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<figure data-type="image" tabindex="1"><img src="https://img-blog.csdnimg.cn/20190809180426792.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDM3ODM4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"></figure>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://oackrevv.github.io/tag/Lkvw0WQfl/" class="tag">
+                    html
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://oackrevv.github.io/post/exWXQbAWN/">
+                  <h3 class="post-title">
+                    PHP自定义函数
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

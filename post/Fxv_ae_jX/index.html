@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>vmware虚拟机中的linux怎么和windows主机做目录映射 | 青衫无忧</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://oackrevv.github.io/favicon.ico?v=1666927561537">
+<link rel="stylesheet" href="https://oackrevv.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="
+1、安装open-vm-tools
+ yum install open-vm-tools open-vm-tools-desktop
+
+2、用vmtools挂载共享目录
+vmware-hgfsclient  //查看共享的目录
+
+vmhg..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://oackrevv.github.io">
+        <img src="https://oackrevv.github.io/images/avatar.png?v=1666927561537" class="site-logo">
+        <h1 class="site-title">青衫无忧</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/oackrevv" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      梦想未完成之前，决不能说放弃！
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://oackrevv.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">vmware虚拟机中的linux怎么和windows主机做目录映射</h2>
+            <div class="post-date">2022-10-28</div>
+            
+            <div class="post-content" v-pre>
+              <p><img src="https://img-blog.csdnimg.cn/20210421150938898.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDM3ODM4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"><br>
+1、安装open-vm-tools</p>
+<pre><code class="language-php"> yum install open-vm-tools open-vm-tools-desktop
+</code></pre>
+<p>2、用vmtools挂载共享目录</p>
+<pre><code class="language-php">vmware-hgfsclient  //查看共享的目录
+</code></pre>
+<pre><code class="language-php">vmhgfs-fuse .host:/VMShare /mnt/hgfs -o allow_other,uid=0,gid=0 
+</code></pre>
+<p>这里一定要加-o后面的部分，否则nginx访问共享目录可能出现403，但是后面的开机自启动配置是有配置的)进行手动挂载，其中VMShare是共享文件夹名，/mnt/hgfs是挂载目录名</p>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://oackrevv.github.io/post/JEuYaGPdz/">
+                  <h3 class="post-title">
+                    cmd 操作数据库
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

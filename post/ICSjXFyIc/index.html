@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>局域网内共享数据库 | 青衫无忧</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://oackrevv.github.io/favicon.ico?v=1666927561537">
+<link rel="stylesheet" href="https://oackrevv.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="有两台电脑（192.168.1.3,192.168.1.2）（相当于局域网里的电脑）
+在192.168.1.3上
+1.安装mysql服务，
+2.安装navicat
+3.grant select,delete,update,insert on..." />
+    <meta name="keywords" content="mysql" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://oackrevv.github.io">
+        <img src="https://oackrevv.github.io/images/avatar.png?v=1666927561537" class="site-logo">
+        <h1 class="site-title">青衫无忧</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/oackrevv" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      梦想未完成之前，决不能说放弃！
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://oackrevv.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">局域网内共享数据库</h2>
+            <div class="post-date">2022-10-28</div>
+            
+            <div class="post-content" v-pre>
+              <p>有两台电脑（192.168.1.3,192.168.1.2）（相当于局域网里的电脑）<br>
+在192.168.1.3上<br>
+1.安装mysql服务，<br>
+2.安装navicat<br>
+3.grant select,delete,update,insert on abc.* to 'root'@'192.168.1.2' identified by 'root';<br>
+（abc是数据库，root是用户名，密码）</p>
+<p>这样在192.168.1.2机子上可以访问了；</p>
+<p>注明：两台电脑在家都用网线连上的（右击本地连接ip为192.168.1.3,子网掩码为192.168.1.2确定即可）;</p>
+<p>Grant all privileges on <em>.</em> to 'root'@'%' identified by 'password' with grant option;(%表示是所有的外部机器，如果指定某一台机，就将%改为相应的机器名；‘root’则是指要使用的用户名，)</p>
+<p>mysql&gt; flush privileges;  (运行为句才生效，或者重启MySQL)</p>
+<p>grant all on <em>.</em> to dba@'localhost'</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://oackrevv.github.io/tag/nMcA-0SnJ/" class="tag">
+                    mysql
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://oackrevv.github.io/post/-A_PG1r3e/">
+                  <h3 class="post-title">
+                    thinkphp5 提示错误 A non well formed numeric value encountered
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

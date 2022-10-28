@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>DDOS攻击 | 青衫无忧</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://oackrevv.github.io/favicon.ico?v=1666927561537">
+<link rel="stylesheet" href="https://oackrevv.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="如何确认是否受到DDOS攻击？
+netstat -ntu | awk '{print $5}' | cut -d: -f1 | sort | uniq -c | sort -n
+执行后，将会显示服务器上所有的每个IP多少个连接数。如图：
+
+..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://oackrevv.github.io">
+        <img src="https://oackrevv.github.io/images/avatar.png?v=1666927561537" class="site-logo">
+        <h1 class="site-title">青衫无忧</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/oackrevv" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      梦想未完成之前，决不能说放弃！
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://oackrevv.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">DDOS攻击</h2>
+            <div class="post-date">2022-10-28</div>
+            
+            <div class="post-content" v-pre>
+              <p>如何确认是否受到DDOS攻击？<br>
+netstat -ntu | awk '{print $5}' | cut -d: -f1 | sort | uniq -c | sort -n<br>
+执行后，将会显示服务器上所有的每个IP多少个连接数。如图：<br>
+<img src="https://img-blog.csdnimg.cn/5606dc6cf9f144088b483caabc303fd0.png" alt="在这里插入图片描述" loading="lazy"><br>
+很明显，前面的数字就是连接数！连接数过大就说明不正常了。</p>
+<p>1.服务器内部安装 iftop 流量监控工具</p>
+<pre><code class="language-php">yum install iftop -y
+</code></pre>
+<pre><code> 2.运行下面命令查看流量占用情况
+</code></pre>
+<pre><code class="language-php">iftop -i eth1 -P
+</code></pre>
+<p>nginx防止DDOS攻击配置<br>
+https://www.nixops.me/articles/nginx-anti-ddos-setting.html</p>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://oackrevv.github.io/post/wBSX3vaYO/">
+                  <h3 class="post-title">
+                    Git
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

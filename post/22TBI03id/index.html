@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>PHP生成图片验证码 | 青衫无忧</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://oackrevv.github.io/favicon.ico?v=1666927561537">
+<link rel="stylesheet" href="https://oackrevv.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="结合网上资料，初次写出来了~~
+&lt;?php
+  	// 设置session
+    session_start(); 
+    // 设置验证码生成几位
+    $num = 4;
+    // 设置宽度
+    $width = 1..." />
+    <meta name="keywords" content="php,后端" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://oackrevv.github.io">
+        <img src="https://oackrevv.github.io/images/avatar.png?v=1666927561537" class="site-logo">
+        <h1 class="site-title">青衫无忧</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/oackrevv" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      梦想未完成之前，决不能说放弃！
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://oackrevv.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">PHP生成图片验证码</h2>
+            <div class="post-date">2022-10-28</div>
+            
+            <div class="post-content" v-pre>
+              <p>结合网上资料，初次写出来了~~</p>
+<pre><code class="language-php">&lt;?php
+  	// 设置session
+    session_start(); 
+    // 设置验证码生成几位
+    $num = 4;
+    // 设置宽度
+    $width = 100;
+    // 设置高度
+    $height = 30;
+    //生成验证码，也可以用mt_rand(1000,9999)随机生成
+     $Code = &quot;&quot;; 
+     for ($i = 0; $i &lt; $num; $i++) { 
+        $Code .= mt_rand(0,9); 
+     } 
+
+    // 将生成的验证码写入session
+    $_SESSION['Code'] = $Code;
+
+    // 设置头部
+    header(&quot;Content-type: image/png&quot;);
+
+    // 创建图像（宽度,高度）
+    $img = imagecreate($width,$height);
+
+    //创建颜色 （创建的图像，R，G，B）
+    $GrayColor = imagecolorallocate($img,230,230,230);
+    $BlackColor = imagecolorallocate($img, 0, 0, 0);
+    $BrColor = imagecolorallocate($img,52,52,52);
+
+    //填充背景（创建的图像，图像的坐标x，图像的坐标y，颜色值）
+    imagefill($img,0,0,$GrayColor);
+
+    //设置边框
+    imagerectangle($img,0,0,$width-1,$height-1, $BrColor);
+
+    //随机绘制两条虚线 五个黑色，五个淡灰色
+    $style = array ($BlackColor,$BlackColor,$BlackColor,$BlackColor,$BlackColor,$GrayColor,$GrayColor,$GrayColor,$GrayColor,$GrayColor);  
+    imagesetstyle($img, $style);
+    imageline($img,0,mt_rand(0,$height),$width,mt_rand(0,$height),IMG_COLOR_STYLED);
+    imageline($img,0,mt_rand(0,$height),$width,mt_rand(0,$height),IMG_COLOR_STYLED);
+
+    //随机生成干扰的点
+    for ($i=0; $i &lt; 200; $i++) {
+        $PointColor = imagecolorallocate($img,mt_rand(0,255),mt_rand(0,255),mt_rand(0,255));
+        imagesetpixel($img,mt_rand(0,$width),mt_rand(0,$height),$PointColor);
+    }
+
+    //将验证码随机显示
+    for ($i = 0; $i &lt; $num; $i++) {
+        $x = ($i*$width/$num)+mt_rand(5,12);
+        $y = mt_rand(5,10);
+        imagestring($img,7,$x,$y,substr($Code,$i,1),$BlackColor); 
+    }
+
+    //输出图像
+    imagepng($img);
+    //结束图像
+    imagedestroy($img);
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://oackrevv.github.io/tag/ua_sXOpfY/" class="tag">
+                    php
+                  </a>
+                
+                  <a href="https://oackrevv.github.io/tag/tN7CLI1qQ/" class="tag">
+                    后端
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://oackrevv.github.io/post/OaYYZjUv8/">
+                  <h3 class="post-title">
+                    PHP正则表达式元字符与常用函数
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

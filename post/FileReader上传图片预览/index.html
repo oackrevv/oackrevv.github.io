@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>FileReader上传图片预览 | 青衫无忧</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://oackrevv.github.io/favicon.ico?v=1666927561537">
+<link rel="stylesheet" href="https://oackrevv.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="✍️ 使用FileReader实现上传图片并预览....
+
+&lt;img scr=&quot;&quot; id=&quot;upload-preview&quot;&gt;
+&lt;input type=&quot;file&quot;..." />
+    <meta name="keywords" content="html,Ajax,javascript,jquery" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://oackrevv.github.io">
+        <img src="https://oackrevv.github.io/images/avatar.png?v=1666927561537" class="site-logo">
+        <h1 class="site-title">青衫无忧</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/oackrevv" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      梦想未完成之前，决不能说放弃！
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://oackrevv.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">FileReader上传图片预览</h2>
+            <div class="post-date">2022-10-27</div>
+            
+            <div class="post-content" v-pre>
+              <p>✍️ 使用FileReader实现上传图片并预览....</p>
+<!-- more -->
+<pre><code>&lt;img scr=&quot;&quot; id=&quot;upload-preview&quot;&gt;
+&lt;input type=&quot;file&quot; id=&quot;upload-img&quot;&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;	
+	$('#upload-img').change(function(){
+        var files = this.files[0];
+        var filereader = new FileReader();
+        var formData = new FormData();
+        //设置头像参数
+        formData.append('head_img',files);
+        //还可以设置其他参数
+        formData.append('rests_param','value');
+        //通过文件流将文件转换成Base64字符串
+        filereader.readAsDataURL(files);
+        //转换成功后
+        filereader.onloadend = function(e){
+            $('#upload-preview').attr('src',e.target.result);
+            $.ajax({
+                url:'{:url(&quot;/member/modifyPerson&quot;)}',
+                type:'post',
+                dataType:'json',
+                data:formData,
+                cache:false,
+                contentType:false,
+                processData:false,
+                success:function (res) {
+                    console.log(res);
+                }
+            })
+        }
+    })
+&lt;/script&gt;
+//FileReader对象的方法
+//FileReader 的拥有 4 个方法，其中 有3 个用来读取文件，另1个用来中断读取。
+//1、abort(); 				 中断读取
+//2、readAsBinaryString(file);该方法将文件读取为二进制字符串，通常我们将它传送到后端，后端可以通过这段字符串存储文件。
+//3、readAsDataURL(file); 	该方法将文件读取为一段以 data: 开头的字符串，这段字符串就是 Data URL，Data URL是一种将小文件直接嵌入文档的方案，这里的小文件通常是指图像与 html 等格式的文件。
+//4、readAsText(file,[encoding]);将文件以文本方式读取，读取的结果即是这个文本文件中的内容。该方法有两个参数，其中第二个参数是文本的编码方式，默认值为 UTF-8。
+​
+//FileReader处理事件
+//1、onabort		中断时触发
+//2、onerror 		出错时触发
+//3、onload 		文件读取成功完成时触发
+//4、onloadend 		读取完成触发，无论成功或失败
+//5、onloadstart 	读取开始时触发
+//6、onprogress 	读取中
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://oackrevv.github.io/tag/Lkvw0WQfl/" class="tag">
+                    html
+                  </a>
+                
+                  <a href="https://oackrevv.github.io/tag/6hr4GO_6d/" class="tag">
+                    Ajax
+                  </a>
+                
+                  <a href="https://oackrevv.github.io/tag/huVWeGQq9/" class="tag">
+                    javascript
+                  </a>
+                
+                  <a href="https://oackrevv.github.io/tag/CX7DwF16Q/" class="tag">
+                    jquery
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://oackrevv.github.io/post/hello-gridea/">
+                  <h3 class="post-title">
+                    Hello Gridea
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>liunx ubuntu端口 | 青衫无忧</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://oackrevv.github.io/favicon.ico?v=1666927561537">
+<link rel="stylesheet" href="https://oackrevv.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="
+查看防火墙状态，也可以看到开放的端口sudo ufw status
+关闭防火墙sudo ufw disable
+开启防火墙sudo ufw enable
+开放端口sudo ufw allow 端口号
+关闭端口sudo ufw deny 端..." />
+    <meta name="keywords" content="linux" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://oackrevv.github.io">
+        <img src="https://oackrevv.github.io/images/avatar.png?v=1666927561537" class="site-logo">
+        <h1 class="site-title">青衫无忧</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/oackrevv" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      梦想未完成之前，决不能说放弃！
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://oackrevv.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">liunx ubuntu端口</h2>
+            <div class="post-date">2022-10-28</div>
+            
+            <div class="post-content" v-pre>
+              <ol>
+<li>查看防火墙状态，也可以看到开放的端口<code>sudo ufw status</code></li>
+<li>关闭防火墙<code>sudo ufw disable</code></li>
+<li>开启防火墙<code>sudo ufw enable</code></li>
+<li>开放端口<code>sudo ufw allow 端口号</code></li>
+<li>关闭端口<code>sudo ufw deny 端口号</code></li>
+<li>重启防火墙<code>sudo ufw reload</code></li>
+</ol>
+<p>端口开启依然无法访问问题排查，查看开启的端口是否有程序监听</p>
+<pre><code class="language-php">netstat -ap | grep 端口
+</code></pre>
+<p>在一台Ubuntu服务器里面配置安装了宝塔，监听的8888端口。本机可以访问，但是局域网就是访问不到。首先怀疑防火墙没有开放8888端口，设置ufw防火墙开放8888端口</p>
+<pre><code class="language-php">sudo ufw allow 8888
+</code></pre>
+<p>然后局域网依然不能访问，接下来应该还要配置一下iptables，开放8080端口</p>
+<pre><code class="language-php">sudo iptables -I INPUT -p tcp --dport 8888 -j ACCEPT
+</code></pre>
+<p>然后局域网就能访问到了。iptables规则设置后是即时生效的,在机器重启后,iptables中的配置信息会被清空，所以需要将配置保存下来。首先将防火墙规则保存到/etc/iptables.up.rules文件中</p>
+<pre><code class="language-php">sudo iptables-save &gt; /etc/iptables.up.rules
+</code></pre>
+<p>然后修改脚本/etc/network/interfaces在网络启动时应用防火墙规则,在末尾添加如下内容</p>
+<pre><code class="language-php">pre-up iptables-restore &lt; /etc/iptables.up.rules
+</code></pre>
+<p>最简单的一个操作：sudo ufw status可检查防火墙的状态，我的返回的是：不活动</p>
+<p>sudo ufw version防火墙版本：<br>
+ufw 0.29-4ubuntu1<br>
+Copyright 2008-2009 Canonical Ltd.</p>
+<p>ubuntu 系统默认已安装ufw.</p>
+<p>1.安装</p>
+<p>sudo apt-get install ufw</p>
+<p>2.启用</p>
+<p>sudo ufw enable</p>
+<p>sudo ufw default deny</p>
+<p>运行以上两条命令后，开启了防火墙，并在系统启动时自动开启。关闭所有外部对本机的访问，但本机访问外部正常。</p>
+<p>3.开启/禁用</p>
+<p>sudo ufw allow|deny [service]</p>
+<p>打开或关闭某个端口，例如：</p>
+<p>sudo ufw allow smtp　允许所有的外部IP访问本机的25/tcp (smtp)端口</p>
+<p>sudo ufw allow 22/tcp 允许所有的外部IP访问本机的22/tcp (ssh)端口</p>
+<p>sudo ufw allow 53 允许外部访问53端口(tcp/udp)</p>
+<p>sudo ufw allow from 192.168.1.100 允许此IP访问所有的本机端口</p>
+<p>sudo ufw allow proto udp 192.168.0.1 port 53 to 192.168.0.2 port 53</p>
+<p>sudo ufw deny smtp 禁止外部访问smtp服务</p>
+<p>sudo ufw delete allow smtp 删除上面建立的某条规则</p>
+<p>4.查看防火墙状态</p>
+<p>sudo ufw status</p>
+<p>一般用户，只需如下设置：</p>
+<p>sudo apt-get install ufw</p>
+<p>sudo ufw enable</p>
+<p>sudo ufw default deny</p>
+<p>以上三条命令已经足够安全了，如果你需要开放某些服务，再使用sudo ufw allow开启。</p>
+<p>开启/关闭防火墙 (默认设置是’disable’)</p>
+<p>sudo ufw enable|disable</p>
+<p>转换日志状态</p>
+<p>sudo ufw logging on|off</p>
+<p>设置默认策略 (比如 “mostly open” vs “mostly closed”)</p>
+<p>sudo ufw default allow|deny</p>
+<p>许 可或者屏蔽端口 (可以在“status” 中查看到服务列表)。可以用“协议：端口”的方式指定一个存在于/etc/services中的服务名称，也可以通过包的meta-data。 ‘allow’ 参数将把条目加入 /etc/ufw/maps ，而 ‘deny’ 则相反。基本语法如下：</p>
+<p>sudo ufw allow|deny [service]</p>
+<p>显示防火墙和端口的侦听状态，参见 /var/lib/ufw/maps。括号中的数字将不会被显示出来。</p>
+<p>sudo ufw status</p>
+<p>UFW 使用范例：</p>
+<p>允许 53 端口</p>
+<p>$ sudo ufw allow 53</p>
+<p>禁用 53 端口</p>
+<p>$ sudo ufw delete allow 53</p>
+<p>允许 80 端口</p>
+<p>$ sudo ufw allow 80/tcp</p>
+<p>禁用 80 端口</p>
+<p>$ sudo ufw delete allow 80/tcp</p>
+<p>允许 smtp 端口</p>
+<p>$ sudo ufw allow smtp</p>
+<p>删除 smtp 端口的许可</p>
+<p>$ sudo ufw delete allow smtp</p>
+<p>允许某特定 IP</p>
+<p>$ sudo ufw allow from 192.168.254.254</p>
+<p>删除上面的规则</p>
+<p>$ sudo ufw delete allow from 192.168.254.254</p>
+<p>linux 2.4内核以后提供了一个非常优秀的防火墙工具：netfilter/iptables,他免费且功能强大，可以对流入、流出的信息进行细化控制，它可以 实现防火墙、NAT（网络地址翻译）和数据包的分割等功能。netfilter工作在内核内部，而iptables则是让用户定义规则集的表结构。</p>
+<p>但是iptables的规则稍微有些“复杂”，因此ubuntu提供了ufw这个设定工具，以简化iptables的某些设定，其后台仍然是 iptables。ufw 即uncomplicated firewall的简称，一些复杂的设定还是要去iptables。</p>
+<p>ufw相关的文件和文件夹有：</p>
+<p>/etc /ufw/：里面是一些ufw的环境设定文件，如 before.rules、after.rules、sysctl.conf、ufw.conf，及 for ip6 的 before6.rule 及 after6.rules。这些文件一般按照默认的设置进行就ok。</p>
+<p>若开启ufw之 后，/etc/ufw/sysctl.conf会覆盖默认的/etc/sysctl.conf文件，若你原来的/etc/sysctl.conf做了修 改，启动ufw后，若/etc/ufw/sysctl.conf中有新赋值，则会覆盖/etc/sysctl.conf的，否则还以/etc /sysctl.conf为准。当然你可以通过修改/etc/default/ufw中的“IPT_SYSCTL=”条目来设置使用哪个 sysctrl.conf.</p>
+<p>/var/lib/ufw/user.rules 这个文件中是我们设置的一些防火墙规则，打开大概就能看明白，有时我们可以直接修改这个文件，不用使用命令来设定。修改后记得ufw reload重启ufw使得新规则生效。</p>
+<p>下面是ufw命令行的一些示例：</p>
+<p>ufw enable/disable:打开/关闭ufw</p>
+<p>ufw status：查看已经定义的ufw规则</p>
+<p>ufw default allow/deny:外来访问默认允许/拒绝</p>
+<p>ufw allow/deny 20：允许/拒绝 访问20端口,20后可跟/tcp或/udp，表示tcp或udp封包。</p>
+<p>ufw allow/deny servicename:ufw从/etc/services中找到对应service的端口，进行过滤。</p>
+<p>ufw allow proto tcp from 10.0.1.0/10 to 本机ip port 25:允许自10.0.1.0/10的tcp封包访问本机的25端口。</p>
+<p>ufw delete allow/deny 20:删除以前定义的&quot;允许/拒绝访问20端口&quot;的规则</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://oackrevv.github.io/tag/uANbFcPT4/" class="tag">
+                    linux
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://oackrevv.github.io/post/cgHrDnd71/">
+                  <h3 class="post-title">
+                    DDOS攻击
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

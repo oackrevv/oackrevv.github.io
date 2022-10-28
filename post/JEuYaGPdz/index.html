@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>cmd 操作数据库 | 青衫无忧</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://oackrevv.github.io/favicon.ico?v=1666927561537">
+<link rel="stylesheet" href="https://oackrevv.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="cmd 操作数据库
+    1、链接到MYSQL数据库：mysql -h -u -p;//h是指服务器，u是指用户，p是指密码
+    2、查看所有数据库：show databases;
+    3、选择一个数据库：use database..." />
+    <meta name="keywords" content="mysql" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://oackrevv.github.io">
+        <img src="https://oackrevv.github.io/images/avatar.png?v=1666927561537" class="site-logo">
+        <h1 class="site-title">青衫无忧</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/oackrevv" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      梦想未完成之前，决不能说放弃！
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://oackrevv.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">cmd 操作数据库</h2>
+            <div class="post-date">2022-10-28</div>
+            
+            <div class="post-content" v-pre>
+              <h2 id="cmd-操作数据库">cmd 操作数据库</h2>
+<pre><code>    1、链接到MYSQL数据库：mysql -h -u -p;//h是指服务器，u是指用户，p是指密码
+    2、查看所有数据库：show databases;
+    3、选择一个数据库：use databasename;
+    4、查看所选择数据库里的所有表：show tables;
+    5、查看这个表的字段结构：desc tablename;
+    6、查看这个表的所有字段数据：select * from tablename;
+</code></pre>
+<h2 id="连表">连表</h2>
+<pre><code>	只返回两张表匹配的记录，这叫内连接（inner join）。
+	返回匹配的记录，以及表 A 多余的记录，这叫左连接（left join）。
+	返回匹配的记录，以及表 B 多余的记录，这叫右连接（right join）。
+	返回匹配的记录，以及表 A 和表 B 各自的多余记录，这叫全连接（full join）。
+</code></pre>
+<h2 id="存储过程">存储过程</h2>
+<pre><code>查看event是否开启
+show variables like '%sche%'; 
+将事件计划开启
+set global event_scheduler=1; 
+关闭事件任务
+alter event e_test ON COMPLETION PRESERVE DISABLE; 
+开启事件任务:
+alter event e_test ON COMPLETION PRESERVE ENABLE; 
+
+## 创建存储过程
+DROP PROCEDURE IF EXISTS update_top;
+CREATE PROCEDURE update_top ( ) BEGIN
+	UPDATE attract_work SET is_top = 0,top_time = NULL,top_expire_time = NULL WHERE top_expire_time &lt;= NOW( );
+END
+
+## 创建事件并触发
+CREATE EVENT update_top_event ON SCHEDULE EVERY 1 SECOND STARTS NOW( ) ON COMPLETION PRESERVE DO
+CALL update_top ( )
+
+## 事件不执行，查看是否开启了event_scheduler
+ SHOW VARIABLES LIKE 'event_scheduler'
+ // 开启event_scheduler
+ set global event_scheduler = on;
+</code></pre>
+<h2 id="解决-sql_modeonly_full_group_by">解决 sql_mode=only_full_group_by</h2>
+<p>出现这个问题主要是和mysql中SQL模式中的only_full_group_by有关，在mysql5.7之前的版本，MySQL没有检测到功能依赖项，only_full_group_by在默认情况下是不启用的，在mysql5.7中only_full_group_by 默认是启用的，所以MySQL会拒绝选择列表、条件或顺序列表引用的查询，这些查询将引用组中未命名的非聚合列，而不是在功能上依赖于它们。</p>
+<p>查看当前mysql的sql模式，执行以下个命令，可以查看 sql_mode 的内容。</p>
+<pre><code class="language-php">mysql&gt; SHOW SESSION VARIABLES;
+mysql&gt; SHOW GLOBAL VARIABLES;
+mysql&gt; select @@sql_mode;
+</code></pre>
+<p>出现only_full_group_by这个意味着sql模式启用了，将它去掉就不会有报错了。<br>
+<img src="https://img-blog.csdnimg.cn/20191116142546793.png" alt="在这里插入图片描述" loading="lazy"><br>
+1、执行sql语句修改sql_mode的值</p>
+<pre><code class="language-php">mysql&gt; set global sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+ 
+mysql&gt; set session sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+</code></pre>
+<p>缺点：设置完成以后，如果重启mysql服务，还是会依然报这个错误。所以推荐使用第二种方式。</p>
+<p>2、找到mysql的配置文件<br>
+<img src="https://img-blog.csdnimg.cn/20191116143136289.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDM3ODM4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"><br>
+打开并增加以下语句</p>
+<pre><code class="language-php">sql_mode='STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION'
+</code></pre>
+<p><img src="https://img-blog.csdnimg.cn/2019111614332532.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDM3ODM4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"><br>
+然后重启mysql即可。</p>
+<h2 id="查询每天的总数">查询每天的总数</h2>
+<pre><code class="language-sql">SELECT DATE_FORMAT(FROM_UNIXTIME(last_addtime),&quot;%Y-%m-%d&quot;) as date,count(*) as total FROM `zs_client` WHERE  `source_id` &lt;&gt; 0  AND `guishu_school_id` &lt;&gt; 0  AND `last_addtime` BETWEEN 1593532800 AND 1596211199 GROUP BY `date`
+
+Db::name('client')-&gt;where($where)-&gt;field('DATE_FORMAT(FROM_UNIXTIME(last_addtime),&quot;%Y-%m-%d&quot;) as date,count(*) as total')-&gt;group('date')-&gt;select();
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://oackrevv.github.io/tag/nMcA-0SnJ/" class="tag">
+                    mysql
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://oackrevv.github.io/post/FCF827sIY/">
+                  <h3 class="post-title">
+                    非常全的Linux常用命令
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

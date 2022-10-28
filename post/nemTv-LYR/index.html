@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>code | 青衫无忧</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://oackrevv.github.io/favicon.ico?v=1666927561537">
+<link rel="stylesheet" href="https://oackrevv.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;t..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://oackrevv.github.io">
+        <img src="https://oackrevv.github.io/images/avatar.png?v=1666927561537" class="site-logo">
+        <h1 class="site-title">青衫无忧</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/oackrevv" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      梦想未完成之前，决不能说放弃！
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://oackrevv.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">code</h2>
+            <div class="post-date">2022-10-28</div>
+            
+            <div class="post-content" v-pre>
+              <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Document&lt;/title&gt;
+    &lt;style&gt;
+        .paging{width: 100%;height: auto;text-align: center;margin-top: 40px;margin-bottom: 40px;}
+        .paging li{display: inline-block;padding: 5px 10px;margin: 0 5px;}
+        .paging .active a{color: white;}
+        .paging .active{background: #13aaf6;border-color: #13aaf6;}
+        .paging li a{display: block;color: #434343;font-size: 16px;}
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    
+&lt;/body&gt;
+&lt;/html&gt;
+&lt;?php
+function handlePaging($count=0,$limit=10,$page=1,$param=[]){
+    if($count &lt; $limit){
+        $totalPage = 1;//如果总记录数小于每页的页数，那么只有一页
+    }else if($count % $limit){
+        $totalPage = (int)($count/$limit)+1;//如果有余数，则总记录数除以每页的页数并加一页
+    }else{
+        $totalPage = (int)$count/$limit;//如果没有余数，则总记录数除以每页的页数
+    }
+    $startPage = 1;//默认开始页
+    $middlePage = 10;//中间要显示多少页
+    $endPage = $totalPage;//默认结束页
+    $pageOffset = ceil(($middlePage-1)/2);//计算偏移量
+    if($totalPage &gt; $middlePage){
+        if($page &gt; $pageOffset){
+            $startPage = $page - $pageOffset;
+            $endPage = $totalPage &gt; $page + $pageOffset ? $page + $pageOffset : $totalPage;
+        }else{
+            $startPage = 1;
+            $endPage = $totalPage &gt; $middlePage ? $middlePage : $totalPage;
+        }
+        if($page + $pageOffset &gt; $totalPage){
+            $startPage = $startPage - ($page + $pageOffset - $endPage);
+        }
+    }
+    // 链接参数处理
+    $urlParam = '';
+    if(!empty($param)){
+        foreach ($param as $k =&gt; $v){
+            if($param[$k] != ''){
+                if($urlParam != ''){
+                    $urlParam .= &quot;&amp;{$k}={$v}&quot;;
+                }else{
+                    $urlParam .= &quot;?{$k}={$v}&quot;;
+                }
+            }
+        }
+    }
+    // 上一页
+    if($page == 1){
+        $href = 'javascript:void(0)';
+    }else{
+        $p = $page-1 &lt; 1 ? 1 : $page-1;
+        if($urlParam != ''){
+            $href = &quot;{$urlParam}&amp;page={$p}&quot;;
+        }else{
+            $href = &quot;?page={$p}&quot;;
+        }
+    }
+    $pageStr = &quot;&lt;li&gt;&lt;a href='{$href}'&gt;上一页&lt;/a&gt;&lt;/li&gt;&quot;;
+    // 中间页
+    for ($i=$startPage; $i &lt;= $endPage; $i++) {
+        $active = '';
+        if($page == $i) {
+            $active = 'class=&quot;active&quot;';//选中当前页
+        }
+        if($urlParam != ''){
+            $href = &quot;{$urlParam}&amp;page={$i}&quot;;
+        }else{
+            $href = &quot;?page={$i}&quot;;
+        }
+        $pageStr .= &quot;&lt;li $active&gt;&lt;a href='{$href}'&gt;{$i}&lt;/a&gt;&lt;/li&gt;&quot;;
+    }
+    // 下一页
+    if($page == $totalPage){
+        $href = 'javascript:void(0)';
+    }else{
+        $p = $page+1 &gt; $totalPage ? $totalPage : $page+1;
+        if($urlParam != ''){
+            $href = &quot;{$urlParam}&amp;page={$p}&quot;;
+        }else{
+            $href = &quot;?page={$p}&quot;;
+        }
+    }
+    $pageStr .= &quot;&lt;li&gt;&lt;a href='{$href}'&gt;下一页&lt;/a&gt;&lt;/li&gt;&quot;;
+    $str      = &quot;&lt;div class='paging'&gt;&lt;ul&gt;{$pageStr}&lt;/ul&gt;&lt;/div&gt;&quot;;
+    return $str;
+}
+echo handlePaging(120,10,$_GET['page']??1);
+echo &quot;&lt;hr&gt;&quot;;
+if(function_exists('random_int')){
+	$clockSeq = random_int(0, 0x3fff);
+}else{
+	$clockSeq = mt_rand(0,0x3fff);
+	
+}
+print_r($clockSeq);
+echo &quot;&lt;hr&gt;&quot;;
+
+
+/*php经典趣味算法*/
+
+echo '1、一群猴子排成一圈，按1，2，…，n依次编号。然后从第1只开始数，数到第m只,把它踢出圈，从它后面再开始数，再数到第m只，在把它踢出去…，如此不停的进行下去，直到最后只剩下一只猴子为止，那只猴子就叫做大王。要求编程模拟此过程，输入m、n, 输出最后那个大王的编号。&lt;br&gt;';
+function king($n, $m){
+    $monkeys = range(1, $n);         //创建1到n数组
+    $i=0;
+    while (count($monkeys)&gt;1) {   //循环条件为猴子数量大于1
+        if(($i+1)%$m==0) {   //$i为数组下标;$i+1为猴子标号
+            unset($monkeys[$i]);    //余数等于0表示正好第m个，删除，用unset删除保持下标关系
+        } else {
+            array_push($monkeys,$monkeys[$i]);     //如果余数不等于0，则把数组下标为$i的放最后，形成一个圆形结构
+            unset($monkeys[$i]);
+        }
+        $i++;//$i 循环+1，不断把猴子删除，或 push到数组 
+    }
+    return current($monkeys);   //猴子数量等于1时输出猴子标号，得出猴王
+}
+echo king(6,3);
+echo &quot;&lt;hr&gt;&quot;;
+
+echo '2、有一母牛，到4岁可生育，每年一头，所生均是一样的母牛，到15岁绝育，不再能生，20岁死亡，问n年后有多少头牛。&lt;br&gt;';
+function niu($y){
+    static $num= 1;                 //定义静态变量;初始化牛的数量为1
+    for ($i=1; $i &lt;=$y ; $i++) {     
+	    if($i&gt;=4 &amp;&amp; $i&lt;15){         //每年递增来算，4岁开始+1，15岁不能生育
+	        $num++;
+	        niu($y-$i);             //递归方法计算小牛$num，小牛生长年数为$y-$i
+	    }else if($i==20){           
+	   		$num--;                //20岁死亡减一
+	    }
+	}
+    return $num;
+}
+echo niu(5);
+echo &quot;&lt;hr&gt;&quot;;
+
+echo '3、杨辉三角&lt;br&gt;';
+/* 默认输出十行，用T(值)的形式可改变输出行数 */
+class T{
+  private $num;
+  public function __construct($var=10) {
+    if ($var&lt;3) die(&quot;值太小啦！&quot;);
+    $this-&gt;num=$var;
+  }
+  public function display(){
+    $n=$this-&gt;num;
+    $arr=array();
+  //$arr=array_fill(0,$n+1,array_fill(0,$n+1,0));
+    $arr[1]=array_fill(0,3,0);
+    $arr[1][1]=1;
+    echo str_pad(&quot; &quot;,$n*12,&quot; &quot;);
+    printf(&quot;%3d&quot;,$arr[1][1]);
+    echo &quot;&lt;br/&gt;&quot;;
+    for($i=2;$i&lt;=$n;$i++){
+      $arr[$i]=array_fill(0,($i+2),0);
+      for($j=1;$j&lt;=$i;$j++){
+        if($j==1)
+          echo str_pad(&quot; &quot;,($n+1-$i)*12,&quot; &quot;);
+        printf(&quot;%3d&quot;,$arr[$i][$j]=$arr[$i-1][$j-1]+$arr[$i-1][$j]);
+        echo &quot;  &quot;;
+      }
+      echo&quot;&lt;br/&gt;&quot;;
+    }
+  }
+}
+$yh=new T('3'); //$yh=new T(数量);
+$yh-&gt;display();
+echo &quot;&lt;hr&gt;&quot;;
+
+echo '4、冒泡排序&lt;br&gt;';
+function maopao($arr){
+    $len = count($arr);
+    for($k=0;$k&lt;=$len;$k++){
+        for($j=$len-1;$j&gt;$k;$j--){
+          if($arr[$j]&lt;$arr[$j-1]){
+            $temp = $arr[$j];
+            $arr[$j] = $arr[$j-1];
+            $arr[$j-1] = $temp;
+          }
+        }
+    }
+    return $arr;
+}
+print_r(maopao([3,5,8,6,1,2,7,4,10,9]));
+echo &quot;&lt;hr&gt;&quot;;
+
+echo '5、快速排序&lt;br&gt;';
+function quickSort($arr) {
+    //先判断是否需要继续进行
+    $length = count($arr);
+    if($length &lt;= 1) {
+        return $arr;
+    }
+    //选择第一个元素作为基准
+    $base_num = $arr[0];
+    //遍历除了标尺外的所有元素，按照大小关系放入两个数组内
+    //初始化两个数组
+    $left_array = array();  //小于基准的
+    $right_array = array();  //大于基准的
+    for($i=1; $i&lt;$length; $i++) {
+        if($base_num &gt; $arr[$i]) {
+            //放入左边数组
+            $left_array[] = $arr[$i];
+        } else {
+            //放入右边
+            $right_array[] = $arr[$i];
+        }
+    }
+    //再分别对左边和右边的数组进行相同的排序处理方式递归调用这个函数
+    $left_array = quickSort($left_array);
+    $right_array = quickSort($right_array);
+    //合并
+    return array_merge($left_array, array($base_num), $right_array);
+}
+print_r(quickSort([3,5,8,6,1,2,7,4,10,9]));
+echo &quot;&lt;hr&gt;&quot;;
+
+echo '6、二分查找算法（折半查找算法）&lt;br&gt;';
+function binsearch($x,$a){
+    $c=count($a);
+    $lower=0;
+    $high=$c-1;
+    while($lower&lt;=$high){
+        $middle=intval(($lower+$high)/2);
+        if($a[$middle]&gt;$x){
+            $high=$middle-1;
+        } elseif($a[$middle]&lt;$x){
+            $lower=$middle+1;
+        } else{
+            return $middle;
+        }
+    }
+    return false;
+}
+echo binsearch(1,[3,5,8,6,1,2,7,4,10,9]);
+echo &quot;&lt;hr&gt;&quot;;
+
+echo &quot;7、PHP奇异算法&lt;br&gt;&quot;;
+function bizarrerie(){
+	$a=1;
+	$b=&amp;$a;
+	echo (++$a)+(++$a);
+}
+bizarrerie();
+echo &quot;&lt;hr&gt;&quot;;
+
+echo &quot;8、字符集合：输入一个字符串，求出该字符串包含的字符集合，并按顺序排序（英文）&lt;br&gt;&quot;;
+function set($str){
+    //转化为数组
+    $arr = str_split($str);
+    //去除重复
+    $arr = array_flip(array_flip($arr));
+    //排序
+    sort($arr);
+    //返回字符串
+    return implode('', $arr);
+}
+set('asdf');
+echo &quot;&lt;hr&gt;&quot;;
+
+echo &quot;9、遍历一个文件下的所有文件和子文件夹下的文件&quot;;
+function AllFile($dir){
+    if($dh = opendir($dir)){
+        while (($file = readdir($dh)) !== false){
+            if($file !='..' &amp;&amp; $file !='.'){
+                if(is_dir($dir.'/'.$file)){
+                    AllFile($dir.'/'.$file);    //如果判断还是文件，则递归
+                }else{  
+                    echo $file.'&lt;br&gt;';         //输出文件名
+                }
+            }
+        } 
+    }
+}
+AllFile('/');
+echo &quot;&lt;hr&gt;&quot;;
+
+echo &quot;10、从一个标准的Url提取出文件的扩展名&quot;;
+function getExt($url) {
+    $arr = parse_url($url);
+    $file = basename($arr['path']);// basename函数返回路径中的文件名部分
+    $ext = explode('.', $file);
+    return $ext[count($ext)-1];
+}
+echo getExt('http://www.baidu.com/a.html');
+echo &quot;&lt;hr&gt;&quot;;
+
+echo &quot;11、有个人想上一个n级的台阶，每次只能迈1级或者迈2级台阶，问：这个人有多少种方法可以把台阶走完？例如：总共3级台阶，可以先迈1级再迈2级，或者先迈2级再迈1级，或者迈3次1级总共3中方式&quot;;
+function jieti($num){   //实际上是斐波那契数列
+    return $num&lt;2?1:jieti($num-1)+jieti($num-2);
+}
+jieti(5);
+echo &quot;&lt;hr&gt;&quot;;
+
+echo &quot;12、请写一段PHP代码，确保多个进程同时写入同一个文件成功&quot;;
+function fp(){
+	$fp = fopen(&quot;lock.txt&quot;,&quot;w+&quot;);
+    if (flock($fp,LOCK_EX)) {
+        //获得写锁，写数据
+        fwrite($fp, &quot;write something&quot;);
+        // 解除锁定
+        flock($fp, LOCK_UN);
+    } else {
+        echo &quot;file is locking...&quot;;
+    }
+    fclose($fp);
+}
+echo fp();
+echo &quot;&lt;hr&gt;&quot;;
+
+echo &quot;13、无限级分类&quot;;
+function tree($arr,$pid=0,$level=0){
+    static $list = array();
+    foreach ($arr as $v) {
+        //如果是顶级分类，则将其存到$list中，并以此节点为根节点，遍历其子节点
+        if ($v['pid'] == $pid) {
+            $v['level'] = $level;
+            $list[] = $v;
+            tree($arr,$v['id'],$level+1);
+        }
+    }
+    return $list;
+}
+$arr = [
+	['id'=&gt;1,'pid'=&gt;0],
+	['id'=&gt;2,'pid'=&gt;0],
+	['id'=&gt;3,'pid'=&gt;1],
+	['id'=&gt;4,'pid'=&gt;1],
+	['id'=&gt;5,'pid'=&gt;2],
+	['id'=&gt;6,'pid'=&gt;2],
+];
+print_r(tree($arr));
+echo &quot;&lt;hr&gt;&quot;;
+
+echo &quot;14、获取上个月第一天 和 最后一天&lt;br&gt;&quot;;
+//获取上个月第一天
+echo date('Y-m-01',strtotime('-1 month')).'&lt;br&gt;';
+//获取上个月最后一天
+echo date('Y-m-t',strtotime('-1 month')).'&lt;br&gt;';
+echo &quot;&lt;hr&gt;&quot;;
+
+echo &quot;15、随机输入一个数字能查询到对应的数据区间&lt;br&gt;&quot;;
+//把区间换成数组写法，用二分法查找区间
+function binsearchs($x,$a){  
+    $c=count($a);  
+    $lower=0;  
+    $high=$c-1;  
+    while($lower&lt;=$high){  
+        $middle=intval(($lower+$high)/2);  
+        if($a[$middle]&gt;=$x){  
+            $high=$middle-1;
+        }elseif($a[$middle]&lt;=$x ){  
+            $lower=$middle+1;
+        }   
+    }
+    return '在区间'.$a[$high].'到'.$a[$lower];
+}
+$array  = ['1','50','100','150','200','250','300'];
+$a = '120';
+echo binsearchs($a,$array);
+</code></pre>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://oackrevv.github.io/post/ohjTOU7kG/">
+                  <h3 class="post-title">
+                    自定义手机端中间弹出框
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

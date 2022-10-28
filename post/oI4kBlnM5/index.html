@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>liunx下使用SRS搭建直播流媒体服务器 | 青衫无忧</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://oackrevv.github.io/favicon.ico?v=1666927561537">
+<link rel="stylesheet" href="https://oackrevv.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="开始编译安装
+git clone -b 4.0release https://gitee.com/ossrs/srs.git
+cd srs/trunk
+./configure &amp;&amp; make 
+vi ./conf/srs.c..." />
+    <meta name="keywords" content="linux" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://oackrevv.github.io">
+        <img src="https://oackrevv.github.io/images/avatar.png?v=1666927561537" class="site-logo">
+        <h1 class="site-title">青衫无忧</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/oackrevv" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      梦想未完成之前，决不能说放弃！
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://oackrevv.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">liunx下使用SRS搭建直播流媒体服务器</h2>
+            <div class="post-date">2022-10-28</div>
+            
+            <div class="post-content" v-pre>
+              <h2 id="开始编译安装">开始编译安装</h2>
+<pre><code class="language-php">git clone -b 4.0release https://gitee.com/ossrs/srs.git
+cd srs/trunk
+./configure &amp;&amp; make 
+vi ./conf/srs.conf #修改配置，如下
+</code></pre>
+<h2 id="srsconf-配置">srs.conf 配置</h2>
+<pre><code class="language-php"># main config for srs.
+# @see full.conf for detail config.
+
+listen              1935;
+max_connections     1000;
+srs_log_tank        file;
+srs_log_file        ./objs/srs.log;
+daemon              on;
+http_api {
+    enabled         on;
+    listen          1985;
+}
+http_server {
+    enabled         on;
+    listen          8080;
+    dir             ./objs/nginx/html;
+}
+stats {
+    network         0;
+}
+rtc_server {
+    enabled on;
+    # Listen at udp://8000
+    listen 8000;
+    #
+    # The $CANDIDATE means fetch from env, if not configed, use * as default.
+    #
+    # The * means retrieving server IP automatically, from all network interfaces,
+    # @see https://github.com/ossrs/srs/wiki/v4_CN_RTCWiki#config-candidate
+    candidate $CANDIDATE;
+}
+
+vhost __defaultVhost__ {
+    rtc {
+        enabled     on;
+        rtc_to_rtmp on;
+        bframe      discard;
+        stun_timeout    30;
+        stun_strict_check on;
+        dtls_role  passive;
+        dtls_version auto;
+        drop_for_pt 0;
+    }
+    
+    hls {
+        enabled         on;
+    }
+    http_remux {
+        enabled     on;
+        mount       [vhost]/[app]/[stream].flv;
+        hstrs       on;
+    }
+    
+    tcp_nodelay     on
+    min_latency     on;
+    
+    play {
+        gop_cache       off;
+        queue_length    10;
+        mw_latency      0;
+        mw_msgs         1;
+    }
+    
+    publish {
+        mr off;
+    }
+    
+    http_hooks {
+        enabled         on;
+        on_connect      http://127.0.0.1:8085/callback/srsCallback/onConnect;
+        on_close        http://127.0.0.1:8085/callback/srsCallback/onClose;
+        on_publish      http://127.0.0.1:8085/callback/srsCallback/onPublish;
+        on_unpublish    http://127.0.0.1:8085/callback/srsCallback/onUnpublish;
+        on_play         http://127.0.0.1:8085/callback/srsCallback/onPlay;
+        on_stop         http://127.0.0.1:8085/callback/srsCallback/onStop;
+        on_dvr          http://127.0.0.1:8085/callback/srsCallback/onDvr;
+    }
+    dvr {
+         enabled         on;
+         dvr_apply       all;
+         dvr_path        ./objs/nginx/html/[app]/[2006]/[01]/[02]/[stream].[15][04][05].[999].flv;
+         dvr_duration    30;
+         dvr_wait_keyframe on;
+         time_jitter      full;
+    }
+}
+
+
+</code></pre>
+<p>保存退出，之后启动srs，<strong>要记得放行对应的端口 ,可看<a href="https://www.cnblogs.com/ubiquitousShare/p/13135747.html">https://www.cnblogs.com/ubiquitousShare/p/13135747.html</a></strong></p>
+<pre><code class="language-php">./objs/srs -c conf/srs.conf
+</code></pre>
+<h2 id="srs常用命令">srs常用命令</h2>
+<blockquote>
+<p>在/srs/trunk下执行<br>
+.<code>/etc/init.d/srs start</code> #启动srs<br>
+<code>./etc/init.d/srs restart</code> #重启srs<br>
+<code>./etc/init.d/srs stop</code> #关闭srs<br>
+<code>./etc/init.d/srs status</code> #查看srs状态<br>
+<code>tail -f ./objs/srs.log</code> #查看srs日志</p>
+</blockquote>
+<h2 id="推流地址">推流地址</h2>
+<blockquote>
+<p>WebRTC推流：<code>webrtc://192.168.88.115/live/livestream</code><br>
+或<br>
+rtmp推流：<code>rtmp://192.168.88.115/live/livestream</code></p>
+</blockquote>
+<h2 id="拉流对应地址">拉流对应地址</h2>
+<blockquote>
+<p>VLC(RTMP)：<code>rtmp://192.168.88.115/live/livestream</code><br>
+H5(HTTP-FLV)： <code>http://192.168.88.115:8080/live/livestream.flv</code><br>
+H5(HLS)：<code>http://192.168.88.115:8080/live/livestream.m3u8</code><br>
+H5(WebRTC)： <code>webrtc://192.168.88.115/live/livestream</code></p>
+</blockquote>
+<blockquote>
+<p>也可以使用SRS进行推流拉流，浏览器访问<code>http://192.168.88.115:8080/</code></p>
+</blockquote>
+<h2 id="源码地址">源码地址</h2>
+<blockquote>
+<p>Github：<a href="https://github.com/ossrs/srs">https://github.com/ossrs/srs</a><br>
+Gitee：<a href="https://gitee.com/ossrs/srs">https://gitee.com/ossrs/srs</a></p>
+</blockquote>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://oackrevv.github.io/tag/uANbFcPT4/" class="tag">
+                    linux
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://oackrevv.github.io/post/0SnPcEiFK/">
+                  <h3 class="post-title">
+                    php+nginx+swoole+redis+mysql搭建
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

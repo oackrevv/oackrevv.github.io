@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>PHP自定义函数 | 青衫无忧</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://oackrevv.github.io/favicon.ico?v=1666927561537">
+<link rel="stylesheet" href="https://oackrevv.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="
+/**
+ * 抓取网站图片并创建对应的文件夹
+ * @param $domain
+ * @return void
+ */
+function getImage($domain) {
+    $result = '';
+    $file =..." />
+    <meta name="keywords" content="php,后端" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://oackrevv.github.io">
+        <img src="https://oackrevv.github.io/images/avatar.png?v=1666927561537" class="site-logo">
+        <h1 class="site-title">青衫无忧</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/oackrevv" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      梦想未完成之前，决不能说放弃！
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://oackrevv.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">PHP自定义函数</h2>
+            <div class="post-date">2022-10-28</div>
+            
+            <div class="post-content" v-pre>
+              <pre><code>
+/**
+ * 抓取网站图片并创建对应的文件夹
+ * @param $domain
+ * @return void
+ */
+function getImage($domain) {
+    $result = '';
+    $file = fopen($domain, &quot;r&quot;);
+    while (!feof($file)) {
+        $result .= fgets($file, 9999);
+    }
+    fclose($file);
+    if($result){
+        $result = str_replace(&quot;\&quot;&quot;, &quot;&quot;, $result);
+        $result = str_replace(&quot;\'&quot;, &quot;&quot;, $result);
+        $result = str_replace('/upload/',$domain.'/upload/',$result);
+        preg_match_all('/&lt;img\ssrc=(http:\/\/.*?)(\s(.*?)&gt;|&gt;)/i',$result,$matches);
+        foreach($matches[1] as $value) {
+            grabImage($value,$domain);
+        }
+    }
+}
+
+function grabImage($url, $domain= &quot;&quot;) {
+    if ($url == '' || $domain == '')  return false;
+    $last_bias = strripos($url,'/');
+    $filename = substr($url,$last_bias+1);
+    $dir = str_replace($domain,'',str_replace($filename,'',$url));//去除域名与文件名，保留目录
+    $domain = preg_replace('/[^a-z,A-Z]/', '', $domain);//去除域名中的符号
+    $path = $domain.$dir;
+	//若目录不存在，则创建
+	if (!is_dir($path)) @mkdir($path,0777,true);
+	$file = $path.$filename;
+	// 若文件不存在，则保存
+	if(!file_exists($file)){
+        ob_start();
+        readfile($url);
+        $img = ob_get_contents();
+        ob_end_clean();
+        $size = strlen($img);
+        $fp2 = @fopen($file, &quot;a&quot;);
+        fwrite($fp2, $img);
+        fclose($fp2);
+    }
+	return $file;
+}
+getImage(&quot;http://yuejb.com/&quot;);
+
+/**
+ * 向关联数组插入指定位置键值
+ * @param $array 要插入的关联数组
+ * @param $position 插入的位置
+ * @param $insert_array 插入的数组
+ * @return void
+ */
+function array_relevant_insert(&amp;$array, $position, $insert_array) {
+    $first_array = array_splice($array, 0, $position);
+    $array = array_merge($first_array, $insert_array, $array);
+}
+
+/**
+ * 处理上传的图片
+ * @param $file
+ * @param string $path
+ * @return array|string
+ */
+function disposeImage($file='',$path=''){
+    $size     = 5242880;//5mb
+    $ext      = 'jpg,jpeg,png,gif';
+    $validate = ['size'=&gt;$size,'ext'=&gt;$ext];
+    if(empty($file)) return ['code'=&gt;0,'msg'=&gt;'文件对象不能为空'];
+    if(empty($path)) $path = 'upload/'.date('Ym');
+    if(is_array($file)){
+        $num   = 0;
+        $total = count($file);
+        $err   = '';
+        $data  = [];
+        foreach ($file as $val){
+            $info = $val-&gt;validate($validate)-&gt;move($path);
+            if($info){
+                $filePath = str_replace('\\','/',$info-&gt;getSaveName());
+                $data[] = '/'.$path.'/'.$filePath;
+            }else{
+                $num += 1;
+                $err = $val-&gt;getError();
+            }
+            unset($info);//需要解除图片进程占用，不然后面删不了已经上传的图片
+        }
+        if($num === $total || $num != 0){
+            if($num != 0)foreach ($data as $val)@unlink($_SERVER['DOCUMENT_ROOT'].$val);//后面的图片如有发生错误，就删除已经上传的
+            return ['code'=&gt;0,'msg'=&gt;$err];
+        }else{
+            return ['code'=&gt;1,'msg'=&gt;'上传成功','data'=&gt;$data];
+        }
+    }else{
+        $info = $file-&gt;validate($validate)-&gt;move($path);
+        if($info){
+            $filePath = str_replace('\\','/',$info-&gt;getSaveName());
+            $data[] = '/'.$path.'/'.$filePath;
+            return ['code'=&gt;1,'msg'=&gt;'上传成功','data'=&gt;$data];
+        }else{
+            return ['code'=&gt;0,'msg'=&gt;$file-&gt;getError()];
+        }
+    }
+}
+
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://oackrevv.github.io/tag/ua_sXOpfY/" class="tag">
+                    php
+                  </a>
+                
+                  <a href="https://oackrevv.github.io/tag/tN7CLI1qQ/" class="tag">
+                    后端
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://oackrevv.github.io/post/7XQg4AMby/">
+                  <h3 class="post-title">
+                    ajax提交表单
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

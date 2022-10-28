@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Git | 青衫无忧</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://oackrevv.github.io/favicon.ico?v=1666927561537">
+<link rel="stylesheet" href="https://oackrevv.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="
+Git 全局设置
+git config --global user.name &quot;青衫无忧&quot;
+git config --global user.email &quot;905821135@qq.com&quot;
+创建G..." />
+    <meta name="keywords" content="git" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://oackrevv.github.io">
+        <img src="https://oackrevv.github.io/images/avatar.png?v=1666927561537" class="site-logo">
+        <h1 class="site-title">青衫无忧</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/oackrevv" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      梦想未完成之前，决不能说放弃！
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://oackrevv.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Git</h2>
+            <div class="post-date">2022-10-28</div>
+            
+            <div class="post-content" v-pre>
+              <figure data-type="image" tabindex="1"><img src="https://img-blog.csdn.net/20180629092829788?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDM3ODM4/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述" loading="lazy"></figure>
+<h2 id="git-全局设置"><strong>Git 全局设置</strong></h2>
+<p>git config --global user.name &quot;青衫无忧&quot;<br>
+git config --global user.email &quot;905821135@qq.com&quot;</p>
+<h2 id="创建git仓库"><strong>创建Git仓库</strong></h2>
+<p>mkdir Draw<br>
+cd Draw<br>
+git init<br>
+touch README.md<br>
+git add README.md<br>
+git commit -m &quot;first commit&quot;<br>
+git remote add origin https://gitee.com/Oackrvee/Draw.git<br>
+git push -u origin master</p>
+<p>已有项目?<br>
+cd existing_git_repo<br>
+git remote add origin https://gitee.com/Oackrvee/Draw.git<br>
+git push -u origin master</p>
+<p>提交<br>
+git add .<br>
+git commit -m &quot;注释内容...&quot;<br>
+git push -u origin master</p>
+<h2 id="更改远程仓库地址"><strong>更改远程仓库地址</strong></h2>
+<p>先删后加<br>
+git remote rm origin<br>
+git remote add origin [url]</p>
+<h2 id="本地项目上传到git"><strong>本地项目上传到git</strong></h2>
+<p>http://www.cnblogs.com/eedc/p/6168430.html<br>
+1、（先进入项目文件夹）通过命令 git init 把这个目录变成git可以管理的仓库<br>
+git init</p>
+<p>2、把文件添加到版本库中，使用命令 git add .添加到暂存区里面去，不要忘记后面的小数点“.”，意为添加文件夹下的所有文件<br>
+git add .</p>
+<p>3、用命令 git commit告诉Git，把文件提交到仓库。引号内为提交说明<br>
+git commit -m 'first commit'</p>
+<p>4、关联到远程库<br>
+git remote add origin 你的远程库地址<br>
+如：<br>
+git remote add origin https://github.com/cade8800/ionic-demo.git</p>
+<p>5、获取远程库与本地同步合并（如果远程库不为空必须做这一步，否则后面的提交会失败）<br>
+git pull --rebase origin master</p>
+<p>6、把本地库的内容推送到远程，使用 git push命令，实际上是把当前分支master推送到远程。执行此命令后会要求输入用户名、密码，验证通过后即开始上传。<br>
+git push -u origin master</p>
+<p>*、状态查询命令<br>
+git status</p>
+<p>备：详细请参考 http://www.cnblogs.com/tugenhua0707/p/4050072.html</p>
+<h2 id="git-pull-后恢复本分支原版本"><strong>git pull 后恢复本分支原版本</strong></h2>
+<p>问题：git pull 后发现此版本不是想要的版本，但pull后的版本，在我的当前分支版本基础上又迭代了N个版本。</p>
+<p>恢复到本分支的原来版本<br>
+git reflog master  (查看本地master分支历史变动纪录)<br>
+会返回<br>
+85bfbdf (master) master@{0}: commit (initial): first commit</p>
+<p>然后选择要恢复的版本<br>
+$ git reset --hard master@{0}</p>
+<h2 id="git配置ssh-key上传本地代码至github"><strong>Git配置SSH Key，上传本地代码至github</strong></h2>
+<p>配置全局的name和email</p>
+<pre><code>$ git config --global user.name &quot;name&quot;  
+$ git config --global user.email &quot;email&quot; 
+</code></pre>
+<p>1、打开git bash检查是否已经有SSH Key</p>
+<pre><code>$ cd ~/.ssh
+</code></pre>
+<p>2、生成SSH Key</p>
+<pre><code>$ ssh-keygen -t rsa -C &quot;你的邮箱&quot;
+</code></pre>
+<p>3、第一次生成的话，直接一路回车，不需要输入密码。不是第一次生成的话，会提示 overwrite (y/n)? 问你是否覆盖旧的 SSH Key ，直接填 y ，然后一直回车就行了，最后得到了两个文件：id_rsa和id_rsa.pub</p>
+<p>4、打开<code>C:\Users\Administrator\.ssh</code>下的<code>id_rsa.pub</code>文件，复制该段信息，登录github账户，点击头像进入<code>Settings -&gt; SSH and GPG keys -&gt; New SSH key</code>，将复制的信息粘贴到Key里。</p>
+<p>5、测试一下是否成功</p>
+<pre><code>$ ssh -T git@github.com
+</code></pre>
+<p>提示“Hi xxx! You've successfully authenticated, but GitHub does not provide shell access.”说明添加成功。</p>
+<h2 id="问题"><strong>问题</strong></h2>
+<p>输 入 git add . 后出现</p>
+<pre><code>warning: LF will be replaced by CRLF in ......  
+The file will have its original line endings in your working directory.  
+</code></pre>
+<p>解决方法：</p>
+<pre><code>git config --global core.autocrlf false
+</code></pre>
+<p>原因就是：<br>
+原因是路径中存在 / 的符号转义问题，false就是不转换符号默认是true，相当于把路径的 / 符号进行转义，这样添加的时候就有问题</p>
+<h2 id="常用命令">常用命令</h2>
+<p>克隆(clone)：从远程仓库URL加载创建一个与远程仓库一样的本地仓库<br>
+提交(commit)：将暂存文件上传到本地仓库（我们在Finder中对本地仓库做修改后一般都得先提交一次，再推送）<br>
+检出(checkout)：切换不同分支<br>
+添加（add）：添加文件到缓存区<br>
+移除（remove）：移除文件至缓存区<br>
+暂存(git stash)：保存工作现场<br>
+重置(reset)：回到最近添加(add)/提交(commit)状态<br>
+合并(merge)：将多个同名文件合并为一个文件，该文件包含多个同名文件的所有内容，相同内容抵消<br>
+抓取(fetch)：从远程仓库获取信息并同步至本地仓库<br>
+拉取(pull)：从远程仓库获取信息并同步至本地仓库，并且自动执行合并（merge）操作，即 pull=fetch+merge<br>
+推送(push)：将本地仓库同步至远程仓库，一般推送（push）前先拉取（pull）一次，确保一致<br>
+分支(branch)：创建/修改/删除分枝<br>
+标签(tag):给项目增添标签<br>
+工作流(Git Flow):团队工作时，每个人创建属于自己的分枝（branch），确定无误后提交到master分枝<br>
+终端(terminal):可以输入git命令行</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://oackrevv.github.io/tag/svr2ryib8/" class="tag">
+                    git
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://oackrevv.github.io/post/oI4kBlnM5/">
+                  <h3 class="post-title">
+                    liunx下使用SRS搭建直播流媒体服务器
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

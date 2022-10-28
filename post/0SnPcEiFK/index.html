@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>php+nginx+swoole+redis+mysql搭建 | 青衫无忧</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://oackrevv.github.io/favicon.ico?v=1666927561537">
+<link rel="stylesheet" href="https://oackrevv.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="一、安装php
+1、下载php
+wget https://www.php.net/distributions/php-7.4.30.tar.gz
+
+2、解压
+tar –xf php-7.4.30.tar.gz
+
+3、进入目录
+cd php-..." />
+    <meta name="keywords" content="后端" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://oackrevv.github.io">
+        <img src="https://oackrevv.github.io/images/avatar.png?v=1666927561537" class="site-logo">
+        <h1 class="site-title">青衫无忧</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/oackrevv" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      梦想未完成之前，决不能说放弃！
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://oackrevv.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">php+nginx+swoole+redis+mysql搭建</h2>
+            <div class="post-date">2022-10-28</div>
+            
+            <div class="post-content" v-pre>
+              <h2 id="一-安装php">一、安装php</h2>
+<p>1、下载php</p>
+<pre><code class="language-php">wget https://www.php.net/distributions/php-7.4.30.tar.gz
+</code></pre>
+<p>2、解压</p>
+<pre><code class="language-php">tar –xf php-7.4.30.tar.gz
+</code></pre>
+<p>3、进入目录</p>
+<pre><code class="language-php">cd php-7.4.30
+</code></pre>
+<p>4、编译安装</p>
+<pre><code class="language-php">./configure --prefix=/usr/local/php  --with-zlib --enable-zip --with-openssl --enable-fpm --enable-mbstring --with-libdir=lib64 --without-pear  --disable-phar
+</code></pre>
+<p>注：<br>
+如果要连接mysql，需要加上 --with-mysql=/usr/local/mysql<br>
+如果想后装mysql，需要加上 --with-mysql=mysqlnd<br>
+如果连接nginx，最好加上 --with-fpm-user=www  --with-fpm-group=www</p>
+<p>全部如下</p>
+<pre><code>./configure --prefix=/usr/local/php --with-mysql=/usr/local/mysql --with-curl --with-freetype-dir --with-gd --with-gettext--with-iconv-dir --with-kerberos --with-libdir=lib64 --with-libxml-dir --with-mysqli --with-openssl --with-pcre-regex --with-pdo-mysql --with-pdo-sqlite --with-pear --with-png-dir --with-jpeg-dir --with-xmlrpc --with-xsl --with-zlib --with-bz2 --with-mhash --enable-fpm --enable-bcmath --enable-libxml --enable-inline-optimization --enable-gd-native-ttf --enable-mbregex --enable-mbstring --enable-opcache --enable-pcntl --enable-shmop --enable-soap --enable-sockets --enable-sysvsem --enable-sysvshm --enable-xml --enable-zip
+</code></pre>
+<p>注：32位系统要去掉--with-libdir=lib64</p>
+<p>5、配置完成之后，执行以下命令</p>
+<pre><code class="language-php">make &amp;&amp; make install
+</code></pre>
+<p>6、配置php，这是php的配置文件</p>
+<pre><code class="language-php">cp /home/php-7.2.34/php.ini-development /usr/local/php/lib/php.ini
+</code></pre>
+<p>7、配置php-fpm.conf，这是php-fpm配置文件</p>
+<pre><code class="language-php">cp /usr/local/php/etc/php-fpm.conf.default /usr/local/php/etc/php-fpm.conf
+</code></pre>
+<p>8、配置www.conf，配置用户的文件</p>
+<pre><code class="language-php">cp /usr/local/php/etc/php-fpm.d/www.conf.default  /usr/local/php/etc/php-fpm.d/www.conf
+</code></pre>
+<p>9、将php-fpm启动文件复制到init.d文件夹中一份方便启动php</p>
+<pre><code class="language-php">cp /usr/local/php/sbin/php-fpm /etc/init.d/php-fpm
+</code></pre>
+<p>10、启动php，确定是否安装成功</p>
+<pre><code class="language-php">执行命令/etc/init.d/php-fpm即可
+查看是否启动：ps -ef | grep php既可以看到php启动了哪些进程
+</code></pre>
+<h2 id="二-简化php执行命令">二、简化php执行命令</h2>
+<p>查看php版本：/usr/local/php/bin/php -v<br>
+简化后：php -v<br>
+执行php文件：/usr/local/php/bin/php test.php<br>
+简化后：php test.php</p>
+<p><strong>开始简化处理：</strong><br>
+执行命令：vi ~/.bash_profile<br>
+<img src="https://img-blog.csdnimg.cn/20201102175325289.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDM3ODM4,size_16,color_FFFFFF,t_70#pic_center" alt="!在这里插入图片描述(https://img-blog.csdnimg.cn/2020110217485461.png#pic_cente" loading="lazy"><br>
+在export PATH下添加</p>
+<pre><code class="language-php">alias php=/usr/local/php/bin/php
+</code></pre>
+<p>之后保存退出，执行以下命令</p>
+<pre><code class="language-php">source ~/.bash_profile 
+</code></pre>
+<p>之后执行php -v 查看是否设置成功，成功会跳出php版本信息</p>
+<h2 id="三-安装成功后配置nginx支持php">三、安装成功后配置nginx支持php</h2>
+<p>1、更改php.ini文件 vi /usr/local/php/lib/php.ini</p>
+<p>通过查找cgi.fix_pathinfo=1这个配置，并去除注释，并改为cgi.fix_pathinfo=0，这里并不属于nginx支持php配置相关，而是专属于nginx下php的一个安全漏洞，如果这里值为1，用户方可以通过上传图片来上传木马，然后通过url访问该图片地址，并在地址后加入/xxx.php将该图片作为php文件运行，这是只有在nginx里才会存在的问题，apache和iis都没有该问题</p>
+<p><em>以上问题可以直接参看鸟哥的博客，写的相当详细：http://www.laruence.com/2010/05/20/1495.html</em></p>
+<p>2、配置web专用的组和用户<br>
+添加www用户组：groupadd www<br>
+添加www用户组下的用户www：useradd -g www www</p>
+<p>3、更改php-fpm.conf配置<br>
+将user=nobody的注释去掉，并将nobody改成上面配置的www用户<br>
+将group=nobody的注释去掉，并将nobody改成上面配置的www用户组<br>
+最后检查php-fpm.conf最后的include的值是不是正确的www.conf目录地址，如果不正确则换成正确的目录地址。</p>
+<p>4）更改www.conf配置</p>
+<p>将user=nobody的注释去掉，并将nobody改成上面配置的www用户</p>
+<p>将group=nobody的注释去掉，并将nobody改成上面配置的www用户组</p>
+<p>5）更改nginx.conf文件 /etc/local/nginx/conf/nginx.conf</p>
+<p>将#user=nobody去掉注释并改为user=www</p>
+<p>去除 location ~ .php<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mrow><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi></mrow><mi mathvariant="normal">这</mi><mi mathvariant="normal">段</mi><mi mathvariant="normal">代</mi><mi mathvariant="normal">码</mi><mi mathvariant="normal">的</mi><mi mathvariant="normal">注</mi><mi mathvariant="normal">释</mi><mi mathvariant="normal">，</mi><mi mathvariant="normal">并</mi><mi mathvariant="normal">将</mi><mi>f</mi><mi>a</mi><mi>s</mi><mi>t</mi><mi>c</mi><mi>g</mi><msub><mi>i</mi><mi>p</mi></msub><mi>a</mi><mi>r</mi><mi>a</mi><mi>m</mi><mi mathvariant="normal">里</mi><mi mathvariant="normal">的</mi><mi mathvariant="normal">/</mi><mi>s</mi><mi>c</mi><mi>r</mi><mi>i</mi><mi>p</mi><mi>t</mi><mi>s</mi><mi mathvariant="normal">改</mi><mi mathvariant="normal">为</mi></mrow><annotation encoding="application/x-tex">{...}这段代码的注释，并将fastcgi_param里的/scripts改为</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.036108em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord">.</span><span class="mord">.</span><span class="mord">.</span></span><span class="mord cjk_fallback">这</span><span class="mord cjk_fallback">段</span><span class="mord cjk_fallback">代</span><span class="mord cjk_fallback">码</span><span class="mord cjk_fallback">的</span><span class="mord cjk_fallback">注</span><span class="mord cjk_fallback">释</span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">并</span><span class="mord cjk_fallback">将</span><span class="mord mathdefault" style="margin-right:0.10764em;">f</span><span class="mord mathdefault">a</span><span class="mord mathdefault">s</span><span class="mord mathdefault">t</span><span class="mord mathdefault">c</span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mord"><span class="mord mathdefault">i</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.15139200000000003em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">p</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">a</span><span class="mord mathdefault">m</span><span class="mord cjk_fallback">里</span><span class="mord cjk_fallback">的</span><span class="mord">/</span><span class="mord mathdefault">s</span><span class="mord mathdefault">c</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">i</span><span class="mord mathdefault">p</span><span class="mord mathdefault">t</span><span class="mord mathdefault">s</span><span class="mord cjk_fallback">改</span><span class="mord cjk_fallback">为</span></span></span></span>document_root<br>
+<img src="https://img-blog.csdnimg.cn/20201103110342119.png#pic_center" alt="在这里插入图片描述" loading="lazy"></p>
+<p>最后将location / {...}里默认index后面添加上index.php，确保index.php作为默认的首页</p>
+<figure data-type="image" tabindex="1"><img src="https://img-blog.csdnimg.cn/20201103110356804.png#pic_center" alt="在这里插入图片描述" loading="lazy"></figure>
+<p>6）重启php-fpm和nginx，可以<code>killall php-fpm</code>然后再<code>/etc/init.d/php-fpm start</code><br>
+即可启动，<code>/usr/local/nginx/sbin/nginx -s stop</code>即可停止nginx，然后执行<code>/usr/local/nginx/sbin/nginx -s reload</code>即可重启。</p>
+<p>7）在html目录里随便创建一个php文件，内容是phpinfo();，然后在浏览器中访问该文件地址，看是否得到正确的php相关信息，如果正确显示则配置成功。</p>
+<h2 id="nginx自定义域名">nginx自定义域名</h2>
+<pre><code class="language-php">vim /usr/local/nginx/conf/nginx.conf
+</code></pre>
+<p>在 http下的 gzip on下添加如下代码，添加之后保存退出</p>
+<pre><code class="language-php">include vhosts/*.conf
+</code></pre>
+<p><img src="https://img-blog.csdnimg.cn/20210422174530119.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDM3ODM4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"><br>
+创建自定义域名的配置文件夹</p>
+<pre><code class="language-php">mkdir /usr/local/nginx/conf/vhosts
+</code></pre>
+<p>新建 test.io_8888.conf 配置文件</p>
+<pre><code class="language-php">vim /usr/local/nginx/conf/vhosts/test.io_8888.conf
+</code></pre>
+<p>添加如下代码，然后保存退出</p>
+<pre><code class="language-php">
+server {
+        listen       8888;
+        server_name  test.io;
+        root   &quot;/home/www/test/public&quot;;
+        location / {
+            index index.php index.html error/index.html;
+            include /home/www/test/public/nginx.htaccess;
+            autoindex  off;
+        }
+        location ~ \.php(.*)$ {
+            fastcgi_pass   127.0.0.1:9000;
+            fastcgi_index  index.php;
+            fastcgi_split_path_info  ^((?U).+\.php)(/?.+)$;
+            fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+            fastcgi_param  PATH_INFO  $fastcgi_path_info;
+            fastcgi_param  PATH_TRANSLATED  $document_root$fastcgi_path_info;
+            include        fastcgi_params;
+        }
+}
+
+</code></pre>
+<p>之后重启nginx</p>
+<pre><code class="language-php">/usr/local/nginx/sbin/nginx -s reload
+</code></pre>
+<p>在hosts里添加对应的ip和域名，然后浏览器访问test.io:8888即可</p>
+<pre><code class="language-php">192.168.153.128 test.io
+</code></pre>
+<h2 id="三-下载swoole">三、下载swoole</h2>
+<p>1、通过git clone git@github.com:swoole/swoole-src.git<br>
+2、直接下载压缩包</p>
+<p>打开解压后的swoole，如果没有configure文件，可通过执行： /usr/local/php/bin/phpize来生成</p>
+<p>之后执行</p>
+<pre><code class="language-php">./configure --with-php-config=/usr/local/php/bin/php-config
+</code></pre>
+<p>然后</p>
+<pre><code class="language-php">make
+</code></pre>
+<pre><code class="language-php">make install
+</code></pre>
+<p>完成。</p>
+<h2 id="四-测试swoole">四、测试swoole</h2>
+<p>1、然后在/root/swoole/swoole-src/examples/server下找一个例子执行<br>
+例如：</p>
+<pre><code class="language-php">php echo.php
+</code></pre>
+<p>之后会报错<br>
+<img src="https://img-blog.csdnimg.cn/20201103161718507.png#pic_center" alt="PHP Fatal error:  Uncaught Error: Class 'swoole_server' not found in /root/swoole/swoole-src/examples/server/echo.php:2" loading="lazy"></p>
+<p>2、接着修改php.ini（完整路径/usr/local/php/lib/php.ini）文件，添加extension=swoole<br>
+<img src="https://img-blog.csdnimg.cn/2020110316290544.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDM3ODM4,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述" loading="lazy">3、然后保存退出，接着重新回到第一点，就不会报错了。换到另一个窗口查看进程：netstat -anp | grep 9501<br>
+<img src="https://img-blog.csdnimg.cn/20201103163718933.png#pic_center" alt="在这里插入图片描述" loading="lazy"></p>
+<h2 id="五-安装redis">五、安装redis</h2>
+<p>1、redis 是用 C 语言开发，安装之前必先确认是否安装 gcc 环境（gcc -v），如果没有安装，执行以下命令进行安装。</p>
+<pre><code class="language-php">yum install -y gcc
+</code></pre>
+<p>2、下载并解压安装包</p>
+<pre><code class="language-php">wget http://download.redis.io/releases/redis-5.0.7.tar.gz
+tar -zxvf redis-5.0.7.tar.gz
+</code></pre>
+<p>3、cd切换到redis解压目录下，执行编译</p>
+<pre><code class="language-php">cd redis-5.0.7 &amp;&amp; make
+</code></pre>
+<p>4、安装并指定安装目录</p>
+<pre><code class="language-php">make install PREFIX=/usr/local/redis
+</code></pre>
+<p>5、启动服务</p>
+<blockquote>
+<p>前台启动</p>
+</blockquote>
+<pre><code class="language-php">cd /usr/local/redis/bin/
+./redis-server
+</code></pre>
+<blockquote>
+<p>后台启动</p>
+</blockquote>
+<p>从 redis 的源码目录中复制 redis.conf 到 redis 的安装目录</p>
+<pre><code class="language-php">cp /usr/local/redis-5.0.7/redis.conf /usr/local/redis/bin/
+</code></pre>
+<p>修改 redis.conf 文件，把 daemonize no 改为 daemonize yes</p>
+<pre><code class="language-php">vim redis.conf
+</code></pre>
+<p>启动</p>
+<pre><code class="language-php">./redis-server redis.conf
+</code></pre>
+<p>6、设置开机启动</p>
+<pre><code class="language-php">vim /etc/systemd/system/redis.service
+</code></pre>
+<p>添加如下内容</p>
+<pre><code class="language-php">[Unit]
+Description=redis-server
+After=network.target
+
+[Service]
+Type=forking
+ExecStart=/usr/local/redis/bin/redis-server /usr/local/redis/bin/redis.conf
+
+PrivateTmp=true
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+<p>注意：<code>ExecStart</code> 配置成自己的路径</p>
+<p>设置开机启动</p>
+<pre><code class="language-php">systemctl daemon-reload
+systemctl start redis.service
+systemctl enable redis.service
+</code></pre>
+<p>创建 redis 命令软链接</p>
+<pre><code class="language-php">ln -s /usr/local/redis/bin/redis-cli /usr/bin/redis
+# 测试
+redis
+127.0.0.1:6379&gt; ping
+PONG
+127.0.0.1:6379&gt;
+</code></pre>
+<p>常用命令</p>
+<pre><code class="language-php"># 启动redis服务
+systemctl start redis.service
+# 停止redis服务
+systemctl stop redis.service
+# 重新启动服务
+systemctl restart redis.service
+# 查看服务当前状态
+systemctl status redis.service
+# 设置开机自启动
+systemctl enable redis.service
+# 停止开机自启动
+systemctl disable redis.service
+</code></pre>
+<blockquote>
+<p>php支持redis</p>
+</blockquote>
+<pre><code class="language-php">wget http://pecl.php.net/get/redis-5.3.4.tgz
+
+tar -zxvf redis-5.3.4.tgz
+
+cd redis-5.3.4
+
+/usr/local/php/bin/phpize　　　　　　　#用phpize生成./configure
+
+./configure --with-php-config=/usr/local/php/bin/php-config 　　#配置
+
+make
+
+make  install
+
+#配置php.ini文件，使得php可以使用redis扩展　　
+vim  /usr/local/php/etc/php.ini
+
+#在extension任意位置添加如下代码
+extension=redis.so
+#保存退出，重启php-fpm，通过phpinfo()查看是否安装成功redis扩展
+
+</code></pre>
+<h2 id="六-mysql">六、Mysql</h2>
+<p>文件下载到Centos/usr/local/mysql文件夹下；</p>
+<pre><code class="language-php">cd /usr/local
+mkdir mysql
+cd mysql
+wget  https://repo.mysql.com/mysql80-community-release-el7-1.noarch.rpm
+</code></pre>
+<p>安装 yum repo文件并更新 yum 缓存</p>
+<pre><code class="language-php">rpm -ivh mysql80-community-release-el7-1.noarch.rpm
+</code></pre>
+<p>执行结果：<br>
+会在/etc/yum.repos.d/目录下生成两个repo文件mysql-community.repo mysql-community-source.repo<br>
+更新 yum 命令</p>
+<pre><code class="language-php">yum clean all
+yum makecache
+</code></pre>
+<p>使用 yum安装mysql<br>
+当我们在使用yum安装mysql时，yum默认会从yum仓库中安装mysql最新的GA版本；如何选择自己的版本；</p>
+<p>第一步： 查看mysql yum仓库中mysql版本，使用如下命令</p>
+<pre><code class="language-php">yum repolist all | grep mysql
+</code></pre>
+<p>第二步 使用 yum-config-manager 命令修改相应的版本为启用状态最新版本为禁用状态，根据需要安装的版本修改</p>
+<pre><code class="language-php">yum-config-manager --disable mysql57-community #关闭5.7版本
+yum-config-manager --enable mysql80-community #开启8.0版本
+
+#如果报yum-config-manager命令不存在，就执行如下命令
+yum -y install yum-utils
+</code></pre>
+<blockquote>
+<p>或者可以编辑 mysql repo文件，<br>
+cat /etc/yum.repos.d/mysql-community.repo<br>
+将相应版本下的enabled改成 1 即可；</p>
+</blockquote>
+<p>安装mysql 命令如下：</p>
+<pre><code class="language-php">yum install mysql-community-server
+</code></pre>
+<p>开启mysql 服务</p>
+<pre><code class="language-php">systemctl start mysqld.service
+</code></pre>
+<p>获取初始密码登录mysql<br>
+mysql在安装后会创建一个root@locahost账户，并且把初始的密码放到了/var/log/mysqld.log文件中；</p>
+<pre><code class="language-php">cat /var/log/mysqld.log | grep password
+</code></pre>
+<p>使用初始密码登录mysql</p>
+<pre><code class="language-php"> #会提示输入密码
+mysql -u root -p 
+
+#回车之后报：
+ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: NO)
+</code></pre>
+<p>忘记密码or重置密码</p>
+<pre><code class="language-php"> #注：windows下修改的是my.ini
+vim /etc/my.cnf
+
+# 在[mysqld]后面任意一行添加skip-grant-tables用来跳过密码验证的过程，设置完密码记得删除
+skip-grant-tables
+
+#重启mysql ，就可以免密码登陆了，然后进行修改密码
+systemctl restart mysqld.service 
+
+#然后重新登录
+mysql -u root -p 
+</code></pre>
+<p>在安装Mysql8.0.3过程中重置密码时报了这个错误, 原因是没有设置密码时需要在/etc/my.cnf中添加这段时才能操作mysql<br>
+#跳过密码验证<br>
+skip-grant-tables<br>
+但是添加完这句后操作mysql又报了这个错误, 这就成了一个死循环, 最后发现了解决办法,<br>
+这是因为权限设置了但还没有刷新导致的。<br>
+先执行</p>
+<pre><code class="language-php">flush privileges;
+</code></pre>
+<p>然后修改密码：</p>
+<pre><code class="language-php">#注意位数和种类至少大写+小写+符号+数字
+ALTER USER 'root'@'localhost' IDENTIFIED BY '123456';
+或
+ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '123456';
+</code></pre>
+<p>密码策略问题异常信息：<br>
+<img src="https://img-blog.csdnimg.cn/20210423120124634.png" alt="在这里插入图片描述" loading="lazy"><br>
+解决办法：<br>
+1、查看 mysql 初始的密码策略，输入语句以下进行查看</p>
+<pre><code class="language-php">SHOW VARIABLES LIKE 'validate_password%';
+</code></pre>
+<p>2、首先需要设置密码的验证强度等级，设置 validate_password.policy 的全局参数为 LOW 即可</p>
+<pre><code class="language-php">set global validate_password.policy=LOW;
+</code></pre>
+<p>3、当前密码长度为 8，设置 validate_password.length  的全局参数为你想要的密码长度即可</p>
+<pre><code class="language-php">set global validate_password.length = 6;
+</code></pre>
+<p>查看密码验证强度和密码长度是否都设置成功，如下图<br>
+<img src="https://img-blog.csdnimg.cn/20210423122319298.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDM3ODM4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" loading="lazy"><br>
+关于上图 mysql 密码策略相关参数：</p>
+<pre><code class="language-php">+--------------------------------------+-------+
+| Variable_name                        | Value |
++--------------------------------------+-------+
+| validate_password.check_user_name    | ON    |检查用户名
+| validate_password.dictionary_file    |       |指定密码验证的文件路径
+| validate_password.length             | 6     |固定密码的总长度
+| validate_password.mixed_case_count   | 0     |整个密码中至少要包含大/小写字母的总个数
+| validate_password.number_count       | 0     |整个密码中至少要包含阿拉伯数字的个数
+| validate_password.policy             | LOW   |指定密码的强度验证等级，默认为 MEDIUM
+| validate_password.special_char_count | 0     |整个密码中至少要包含特殊字符的个数
++--------------------------------------+-------+
+关于 validate_password.policy 的取值：
+0/LOW：只验证长度;
+1/MEDIUM：验证长度、数字、大小写、特殊字符;
+2/STRONG：验证长度、数字、大小写、特殊字符、字典文件;
+</code></pre>
+<p>常用mysql服务命令：</p>
+<pre><code class="language-php">mysql -u username -p #登录mysql
+quit #退出mysql 
+systemctl start mysqld.service  #启动mysql
+systemctl stop mysqld.service #结束
+systemctl restart mysqld.service #重启
+systemctl enable mysqld.service #开机自启
+mysql --version 或 mysql -V #查看mysql版本
+</code></pre>
+<p>设置mysql允许远程连接<br>
+1.登录mysql，命令：<code>mysql -u root -p</code> 然后输入密码即可<br>
+2.使用mysql库：<code>use mysql;</code><br>
+3.查询信息：<code>select user,host from user;</code><br>
+4.修改root用户的host字段：<code>update user set host=&quot;%&quot; where user=&quot;root&quot;;</code><br>
+5.使本次修改立即生效：<code>flush privileges;</code></p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://oackrevv.github.io/tag/tN7CLI1qQ/" class="tag">
+                    后端
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://oackrevv.github.io/post/Fxv_ae_jX/">
+                  <h3 class="post-title">
+                    vmware虚拟机中的linux怎么和windows主机做目录映射
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>
